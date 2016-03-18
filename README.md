@@ -1,11 +1,11 @@
 Stealth SSH server using onion service
 ======================================
 
-Tor and onion service for your SSH server with password protected onion address.
+Tor onion service for your SSH server with password protected onion address.
 
 This onion service cannot be port scanned.
-Does not allow anyone else to port scan or fingerprint your SSH server.
-Hence no risk of exposing your onion address <=> real IP address because SSH fingerprint match.
+Does not allow anyone else to connect or fingerprint your SSH server.
+Hence no risk of exposing your onion address <=> real IP address because SSH fingerprint matching.
 
 You should read the autoconfigure.sh and execute the lines by hand.
 

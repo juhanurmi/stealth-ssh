@@ -2,11 +2,14 @@
 
 # Install Tor
 apt-get update 
-apt-get install --yes tor
+apt-get install tor
+apt-get install connect-proxy
 
 # Create hidden service folder
 mkdir -p /var/lib/tor/ssh_onion_service/
-chown -R debian-tor:debian-tor /var/lib/tor/ssh_onion_service/
+
+#line from the original repository I still do not understand the utility of this command
+#chown -R debian-tor:debian-tor /var/lib/tor/ssh_onion_service/
 chmod 0700 /var/lib/tor/ssh_onion_service/
 
 # Add settings for SSH connection
@@ -16,8 +19,9 @@ echo "HiddenServiceDir /var/lib/tor/ssh_onion_service/" >> /etc/tor/torrc
 # Create authentication token
 AUTH="$(< /dev/urandom tr -dc a-z0-9 | head -c16)"
 echo "HiddenServiceAuthorizeClient stealth $AUTH" >> /etc/tor/torrc
-echo "HiddenServicePort 22 127.0.0.1:51984" >> /etc/tor/torrc
-
+#only if you want to change ports
+#echo "HiddenServicePort 22 127.0.0.1:51984" >> /etc/tor/torrc
+echo "HiddenServicePort 22 127.0.0.1:22" >> /etc/tor/torrc
 service tor restart
 
 sed -i 's/Port 22/Port 51984/g' /etc/ssh/sshd_config
@@ -29,9 +33,9 @@ CONNECTION="$(cat /var/lib/tor/ssh_onion_service/hostname)"
 ONION="$(echo $CONNECTION | cut -d' ' -f1)"
 echo "# Add this to your .ssh/config in client side"
 echo "host hidden"
-echo -e '\thostname $ONION'
-echo -e '\tuser root'
-echo -e '\tproxyCommand /usr/local/bin/ncat --proxy 127.0.0.1:9050 --proxy-type socks5 %h %p'
+echo -e "\thostname $ONION"
+echo -e "\tuser root"
+echo -e "\tproxyCommand /usr/local/bin/ncat --proxy 127.0.0.1:9050 --proxy-type socks5 %h %p"
 echo ""
 echo "Add this line to your /etc/tor/torrc on client side."
 echo "HidServAuth $CONNECTION"

@@ -1,9 +1,13 @@
 #!/bin/bash
+#Additional references:
+#http://www.nurdletech.com/linux-notes/ssh/hidden-service.html
+#https://www.khalidalnajjar.com/access-your-raspberry-pi-globally-using-tor/
+#https://medium.com/@ajphillips/how-to-create-your-own-tor-hidden-service-436bece8602f#.3mtau28ct
 
 # Install Tor
-apt-get update 
-apt-get install tor
-apt-get install connect-proxy
+apt update 
+apt install tor
+apt install connect-proxy
 
 # Create hidden service folder
 mkdir -p /var/lib/tor/ssh_onion_service/
@@ -34,7 +38,7 @@ ONION="$(echo $CONNECTION | cut -d' ' -f1)"
 echo "# Add this to your .ssh/config in client side"
 echo "host hidden"
 echo -e "\thostname $ONION"
-echo -e "\tuser root"
+echo -e "\tuser ethos"
 echo -e "\tproxyCommand /usr/local/bin/ncat --proxy 127.0.0.1:9050 --proxy-type socks5 %h %p"
 echo ""
 echo "Add this line to your /etc/tor/torrc on client side."
